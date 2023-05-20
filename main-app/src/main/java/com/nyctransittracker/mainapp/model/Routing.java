@@ -1,4 +1,4 @@
-package com.nyctransittracker.mainapp.util;
+package com.nyctransittracker.mainapp.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
