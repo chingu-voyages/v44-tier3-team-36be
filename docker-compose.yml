@@ -1,0 +1,25 @@
+version: '2'
+services:
+  main-app:
+    container_name: main-app
+    build:
+      context: main-app
+      dockerfile: Dockerfile
+    image: main-app:latest
+    ports:
+      - 8080:8080
+    networks:
+      - spring-cloud-network
+  notifications-app:
+    container_name: notifications-app
+    build:
+      context: notifications-app
+      dockerfile: Dockerfile
+    image: notifications-app:latest
+    ports:
+      - 8090:8090
+    networks:
+      - spring-cloud-network
+networks:
+  spring-cloud-network:
+    driver: bridge
