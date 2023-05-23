@@ -1,24 +1,22 @@
-package com.nyctransittracker.mainapp.config;
-
-import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
-
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
+package com.nyctransittracker.mainapp.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import java.security.Key;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
 
 @Service
 public class JwtService {
 
-    private static final String SECRET_KEY = "482B4D6251655468576D5A7134743777217A25432A462D4A404E635266556A58";
+    private static final String SECRET_KEY = "482B4D6251655468576D5A7134743777217A25432A462D4A404E635266556A58"; // ONLY FOR TEST, DON'T USE IN DEPLOYMENT BUILD
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);

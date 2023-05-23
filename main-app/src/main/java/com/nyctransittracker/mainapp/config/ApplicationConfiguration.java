@@ -14,14 +14,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.nyctransittracker.mainapp.user.User;
-import com.nyctransittracker.mainapp.user.UserRepository;
+import com.nyctransittracker.mainapp.model.User;
+import com.nyctransittracker.mainapp.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
-public class ApplicationConfig {
+public class ApplicationConfiguration {
 
     private final UserRepository repository;
     

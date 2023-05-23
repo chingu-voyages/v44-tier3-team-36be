@@ -1,9 +1,12 @@
-package com.nyctransittracker.mainapp.auth;
+package com.nyctransittracker.mainapp.service;
 
-import com.nyctransittracker.mainapp.config.JwtService;
-import com.nyctransittracker.mainapp.user.Role;
-import com.nyctransittracker.mainapp.user.User;
-import com.nyctransittracker.mainapp.user.UserRepository;
+import com.nyctransittracker.mainapp.dto.AuthenticationRequest;
+import com.nyctransittracker.mainapp.dto.AuthenticationResponse;
+import com.nyctransittracker.mainapp.dto.RegisterRequest;
+import com.nyctransittracker.mainapp.model.Role;
+import com.nyctransittracker.mainapp.model.User;
+import com.nyctransittracker.mainapp.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

@@ -1,5 +1,6 @@
-package com.nyctransittracker.mainapp.user;
+package com.nyctransittracker.mainapp.repository;
 
+import com.nyctransittracker.mainapp.model.User;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 

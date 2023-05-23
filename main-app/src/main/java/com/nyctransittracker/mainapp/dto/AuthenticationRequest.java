@@ -1,4 +1,4 @@
-package com.nyctransittracker.mainapp.auth;
+package com.nyctransittracker.mainapp.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationResponse {
-    private String token;
+public class AuthenticationRequest {
+    private String email;
+    String password;
 }
