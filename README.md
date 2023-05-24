@@ -6,10 +6,14 @@ This project is a spring boot application with spring boot web dependency to run
 
 Other dependencies: Spring Data JPA and MySQL Driver for data persistence.
 
- We are utilizing Java version 17 and Maven build tools.
+We are utilizing Java version 17 and Maven build tools.
 
+The main-app is used for dealing with user, subscription and station information while the notifications-app is used for managing and sending notifications to our end users as needed.
+ 
 The main-app is set to run on port 8080 while the notifications-app is set to run on port 8090
 
-Both applications can be started with the command `./mvnw spring-boot:run`.
+When running locally, can stop and start both applications at the same time using docker-compose.
+
+The command 'docker-compose up --build' will start them and docker-compose down will stop running them.
 
 To run tests for each application, simply right click on the application name and select `run all tests`.

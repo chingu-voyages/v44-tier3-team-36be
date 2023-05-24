@@ -1,6 +1,6 @@
 package com.nyctransittracker.mainapp.util;
 
-import com.nyctransittracker.mainapp.model.DataResponse;
+import com.nyctransittracker.mainapp.model.MtaResponse;
 import com.nyctransittracker.mainapp.service.RedisService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -19,12 +19,12 @@ public class DataFetcher {
 
     @Scheduled(fixedRate = 30000)
     public void fetchData() {
-        DataResponse dataResponse = webClient.get()
+        MtaResponse mtaResponse = webClient.get()
                 .uri(url)
                 .retrieve()
-                .bodyToMono(DataResponse.class)
+                .bodyToMono(MtaResponse.class)
                 .block();
-        redisService.saveData(dataResponse);
+        redisService.saveData(mtaResponse);
     }
 
 }

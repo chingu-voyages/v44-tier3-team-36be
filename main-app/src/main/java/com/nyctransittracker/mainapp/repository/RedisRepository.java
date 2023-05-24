@@ -1,6 +1,6 @@
 package com.nyctransittracker.mainapp.repository;
 
-import com.nyctransittracker.mainapp.model.DataResponse;
+import com.nyctransittracker.mainapp.model.MtaResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -9,11 +9,11 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class RedisRepository {
 
-    private final RedisTemplate<String, DataResponse> redisTemplate;
+    private final RedisTemplate<String, MtaResponse> redisTemplate;
 
     private static final String KEY = "data";
 
-    public void save(DataResponse data) {
+    public void save(MtaResponse data) {
         try {
             redisTemplate.opsForValue().set(KEY, data);
         } catch (Exception e) {
@@ -21,7 +21,7 @@ public class RedisRepository {
         }
     }
 
-    public DataResponse getData() {
+    public MtaResponse getData() {
         return redisTemplate.opsForValue().get(KEY);
     }
 }

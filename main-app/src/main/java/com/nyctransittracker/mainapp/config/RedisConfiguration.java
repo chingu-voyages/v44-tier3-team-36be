@@ -1,6 +1,6 @@
 package com.nyctransittracker.mainapp.config;
 
-import com.nyctransittracker.mainapp.model.DataResponse;
+import com.nyctransittracker.mainapp.model.MtaResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +11,7 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 
 @Configuration
 @RequiredArgsConstructor
-public class RedisConfig {
+public class RedisConfiguration {
 
     private final RedisProperties redisProperties;
     @Bean
@@ -25,10 +25,10 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, DataResponse> redisTemplate() {
-        RedisTemplate<String, DataResponse> redisTemplate = new RedisTemplate<>();
+    public RedisTemplate<String, MtaResponse> redisTemplate() {
+        RedisTemplate<String, MtaResponse> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(jedisConnectionFactory());
-        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(DataResponse.class));
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(MtaResponse.class));
         return redisTemplate;
     }
 }

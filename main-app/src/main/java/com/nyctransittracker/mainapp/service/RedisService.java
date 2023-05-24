@@ -1,6 +1,6 @@
 package com.nyctransittracker.mainapp.service;
 
-import com.nyctransittracker.mainapp.model.DataResponse;
+import com.nyctransittracker.mainapp.model.MtaResponse;
 import com.nyctransittracker.mainapp.repository.RedisRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RedisService {
     private final RedisRepository redisRepository;
-    public void saveData(DataResponse data) {
+    public void saveData(MtaResponse data) {
         redisRepository.save(data);
     }
 
-    public DataResponse getData() {
+    public MtaResponse getData() {
         return redisRepository.getData();
     }
 }

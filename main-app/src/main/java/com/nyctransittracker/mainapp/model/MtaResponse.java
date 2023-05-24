@@ -12,7 +12,7 @@ import java.util.Map;
 @AllArgsConstructor
 @Data
 @RedisHash("data")
-public class DataResponse {
+public class MtaResponse {
     private int timestamp;
     @JsonProperty("routes")
     private Map<String, Route> routes;
