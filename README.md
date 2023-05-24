@@ -17,3 +17,11 @@ When running locally, can stop and start both applications at the same time usin
 The command 'docker-compose up --build' will start them and docker-compose down will stop running them.
 
 To run tests for each application, simply right click on the application name and select `run all tests`.
+
+### Contributors
+
+<br/>
+
+<a href="https://github.com/chingu-voyages/v44-tier3-team-36be/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=chingu-voyages/v44-tier3-team-36be" />
+</a>
