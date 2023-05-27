@@ -13,6 +13,7 @@ import java.util.Map;
 @Data
 @RedisHash("data")
 public class MtaResponse {
+
     private int timestamp;
     @JsonProperty("routes")
     private Map<String, Route> routes;
