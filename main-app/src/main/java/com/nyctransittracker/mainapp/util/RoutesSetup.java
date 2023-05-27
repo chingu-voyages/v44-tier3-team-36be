@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nyctransittracker.mainapp.model.Coordinate;
 import com.nyctransittracker.mainapp.model.Path;
 import com.nyctransittracker.mainapp.model.StationDetail;
+import com.nyctransittracker.mainapp.service.PathService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -21,11 +22,12 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class RoutesSetup implements CommandLineRunner {
 
+    private final PathService pathService;
     private final static String filePath = "classpath:station_details.json";
 
     @Override
     public void run(String... args) throws Exception {
-        readJson();
+//        readJson();
     }
 
     public void readJson() {
@@ -44,10 +46,10 @@ public class RoutesSetup implements CommandLineRunner {
                     coordinates.add(0, new Coordinate(stationDetail.getLongitude(), stationDetail.getLatitude()));
                     StationDetail nextStationDetail = map.get(nextStopId);
                     coordinates.add(new Coordinate(nextStationDetail.getLongitude(), nextStationDetail.getLatitude()));
-                    paths.add(new Path(pathName, coordinates));
+                    paths.add(Path.builder().pathName(pathName).coordinates(coordinates).build());
                 });
             });
-            System.out.println(paths);
+            pathService.saveAllPaths(paths);
         } catch (IOException e) {
             e.printStackTrace();
         }
