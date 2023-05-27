@@ -20,7 +20,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class RoutesSetup implements CommandLineRunner {
+public class PathSetup implements CommandLineRunner {
 
     private final PathService pathService;
     private final static String filePath = "classpath:station_details.json";
