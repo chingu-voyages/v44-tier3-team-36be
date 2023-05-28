@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//@Component
+@Component
 @RequiredArgsConstructor
 public class PathSetup implements CommandLineRunner {
 
@@ -81,6 +81,6 @@ public class PathSetup implements CommandLineRunner {
 
     public String findNextStopId(Map<String, Integer> stops, String lastStopId) {
         List<String> stopIds = new ArrayList<>(stops.keySet());
-        return stopIds.get(stopIds.indexOf(lastStopId + 1)); // not too sure if I have to check bounds here
+        return stopIds.get(stopIds.indexOf(lastStopId) + 1); // not too sure if I have to check bounds here
     }
 }
