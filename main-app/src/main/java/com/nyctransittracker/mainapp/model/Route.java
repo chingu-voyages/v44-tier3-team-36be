@@ -18,7 +18,7 @@ public class Route {
     private String status;
     private boolean visible;
     private boolean scheduled;
-    @JsonProperty("direction_statuses")
+//    @JsonProperty("direction_statuses")
     private Map<String, String> directionStatuses;
     @JsonProperty("delay_summaries")
     private Map<String, String> delaySummaries;

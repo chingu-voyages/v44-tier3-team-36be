@@ -2,6 +2,7 @@ package com.nyctransittracker.mainapp.config;
 
 import java.util.Optional;
 
+import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -56,6 +57,11 @@ public class ApplicationConfiguration {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    GeometryFactory geometryFactory() {
+        return new GeometryFactory();
     }
 
     }

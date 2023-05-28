@@ -2,11 +2,11 @@ package com.nyctransittracker.mainapp.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nyctransittracker.mainapp.model.Coordinate;
-import com.nyctransittracker.mainapp.model.Path;
-import com.nyctransittracker.mainapp.model.StationDetail;
+import com.nyctransittracker.mainapp.model.*;
 import com.nyctransittracker.mainapp.service.PathService;
+import com.nyctransittracker.mainapp.service.RedisService;
 import lombok.RequiredArgsConstructor;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
@@ -18,16 +18,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component
+//@Component
 @RequiredArgsConstructor
 public class PathSetup implements CommandLineRunner {
 
     private final PathService pathService;
+    private final RedisService redisService;
+    private final GeometryFactory geometryFactory;
     private final static String filePath = "classpath:station_details.json";
 
     @Override
     public void run(String... args) throws Exception {
 //        readJson();
+        calculateTrainPositions();
     }
 
     public void readJson() {
@@ -53,5 +56,31 @@ public class PathSetup implements CommandLineRunner {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void calculateTrainPositions() {
+        MtaResponse mtaResponse = redisService.getData();
+        Map<String, Route> routes = mtaResponse.getRoutes();
+        Map.Entry<String, Route> routeEntry = routes.entrySet().iterator().next();
+        Route route = routeEntry.getValue();
+        Map<String, List<Trip>> trips = route.getTrips();
+        trips.forEach((direction, tripList) -> {
+            tripList.forEach((trip) -> {
+                String lastStopId = trip.getLastStopMade();
+                if (lastStopId == null) {
+                    return;
+                }
+                String nextStopId = findNextStopId(trip.getStops(), lastStopId);
+                String pathName = (direction.equals("north")) ?
+                        (lastStopId + "-" + nextStopId) : (nextStopId + "-" + lastStopId);
+                Path path = pathService.getPath(pathName);
+            });
+        });
+        System.out.println("end");
+    }
+
+    public String findNextStopId(Map<String, Integer> stops, String lastStopId) {
+        List<String> stopIds = new ArrayList<>(stops.keySet());
+        return stopIds.get(stopIds.indexOf(lastStopId + 1)); // not too sure if I have to check bounds here
     }
 }
