@@ -14,7 +14,7 @@ import java.util.Map;
 @RedisHash("data")
 public class MtaResponse {
 
-    private int timestamp;
+    private long timestamp;
     @JsonProperty("routes")
     private Map<String, Route> routes;
 

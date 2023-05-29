@@ -12,7 +12,7 @@ import java.util.Map;
 @NoArgsConstructor
 public class Trip {
     private String id;
-    private Map<String, Integer> stops; // stopId to arrival time (in epoch time)
+    private Map<String, Long> stops; // stopId to arrival time (in epoch time)
     @JsonProperty("delayed_time")
     private int delayedTime;
     @JsonProperty("schedule_discrepancy")
