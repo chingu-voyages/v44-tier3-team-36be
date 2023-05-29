@@ -27,7 +27,7 @@ public class DataFetcher {
                 .bodyToMono(MtaResponse.class)
                 .block();
         redisService.saveData(mtaResponse);
-        log.info("data fetched");
+        log.info("data fetched and saved");
     }
 
 }

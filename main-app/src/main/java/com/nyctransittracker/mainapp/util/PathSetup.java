@@ -34,6 +34,10 @@ public class PathSetup implements CommandLineRunner {
     }
 
     public void readJson() {
+        /*
+        * currently, can't capture service changes where train goes from station A to station C,
+        * when normally this train goes station A -> station B -> station C
+        * */
         try {
             File file = ResourceUtils.getFile(filePath);
             ObjectMapper mapper = new ObjectMapper();
@@ -80,7 +84,12 @@ public class PathSetup implements CommandLineRunner {
     }
 
     public String findNextStopId(Map<String, Integer> stops, String lastStopId) {
-        List<String> stopIds = new ArrayList<>(stops.keySet());
+        /*
+         * sorting stops by the timestamp then extracting out the keys (stop IDs)
+         * */
+        List<Map.Entry<String, Integer>> entryList = new ArrayList<>(stops.entrySet());
+        entryList.sort(Map.Entry.comparingByValue());
+        List<String> stopIds = entryList.stream().map(Map.Entry::getKey).toList();
         return stopIds.get(stopIds.indexOf(lastStopId) + 1); // not too sure if I have to check bounds here
     }
 }

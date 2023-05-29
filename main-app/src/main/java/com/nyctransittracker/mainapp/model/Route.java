@@ -1,5 +1,7 @@
 package com.nyctransittracker.mainapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,6 +13,8 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Route {
     private String id;
     private String name;
@@ -18,7 +22,7 @@ public class Route {
     private String status;
     private boolean visible;
     private boolean scheduled;
-//    @JsonProperty("direction_statuses")
+    @JsonProperty("direction_statuses")
     private Map<String, String> directionStatuses;
     @JsonProperty("delay_summaries")
     private Map<String, String> delaySummaries;
