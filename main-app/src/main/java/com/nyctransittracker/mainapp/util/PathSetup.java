@@ -6,6 +6,7 @@ import com.nyctransittracker.mainapp.model.*;
 import com.nyctransittracker.mainapp.service.PathService;
 import com.nyctransittracker.mainapp.service.RedisService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class PathSetup implements CommandLineRunner {
 
     private final PathService pathService;
@@ -30,9 +32,13 @@ public class PathSetup implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 //        readJson();
-        calculateTrainPositions();
+//        calculateTrainPositions();
     }
 
+    /*
+    * Create set of paths between stations (list of coordinates) that can be used to create a path/line between
+    * two stations, which can be used to generate a shape and approximate a train's position
+    * */
     public void readJson() {
         /*
         * currently, can't capture service changes where train goes from station A to station C,
@@ -45,15 +51,19 @@ public class PathSetup implements CommandLineRunner {
                     new TypeReference<HashMap<String, StationDetail>>() {});
             List<Path> paths = new ArrayList<>();
             map.forEach((stopId, stationDetail) -> {
+//                code to see if there are stations where it splits into multiple next stations
+//                if (stationDetail.getNorth().size() > 1) {
+//                    log.info(stationDetail.getName());
+//                }
                 stationDetail.getNorth().forEach((nextStopId, coordinateList) -> {
                     String pathName = stopId + "-" + nextStopId;
-                    List<Coordinate> coordinates = new ArrayList<>(coordinateList.stream()
-                            .map(coordinate -> new Coordinate(coordinate.get(0), coordinate.get(1)))
+                    List<Point> points = new ArrayList<>(coordinateList.stream()
+                            .map(coordinate -> new Point(coordinate.get(0), coordinate.get(1)))
                             .toList()); // coordinates not including the current stop's coordinate or next stop's coordinate
-                    coordinates.add(0, new Coordinate(stationDetail.getLongitude(), stationDetail.getLatitude()));
+                    points.add(0, new Point(stationDetail.getLongitude(), stationDetail.getLatitude()));
                     StationDetail nextStationDetail = map.get(nextStopId);
-                    coordinates.add(new Coordinate(nextStationDetail.getLongitude(), nextStationDetail.getLatitude()));
-                    paths.add(Path.builder().pathName(pathName).coordinates(coordinates).build());
+                    points.add(new Point(nextStationDetail.getLongitude(), nextStationDetail.getLatitude()));
+                    paths.add(Path.builder().pathName(pathName).points(points).build());
                 });
             });
             pathService.saveAllPaths(paths);
@@ -77,16 +87,15 @@ public class PathSetup implements CommandLineRunner {
                 String nextStopId = findNextStopId(trip.getStops(), lastStopId);
                 String pathName = (direction.equals("north")) ?
                         (lastStopId + "-" + nextStopId) : (nextStopId + "-" + lastStopId);
+                // simply getting from pathService will not work for express routes
                 Path path = pathService.getPath(pathName);
+                //TODO: convert list of Coordinates into a line using JTS and approximate current train position
             });
         });
-        System.out.println("end");
     }
 
     public String findNextStopId(Map<String, Integer> stops, String lastStopId) {
-        /*
-         * sorting stops by the timestamp then extracting out the keys (stop IDs)
-         * */
+        // sorting stops by the timestamp then extracting out the keys (stop IDs)
         List<Map.Entry<String, Integer>> entryList = new ArrayList<>(stops.entrySet());
         entryList.sort(Map.Entry.comparingByValue());
         List<String> stopIds = entryList.stream().map(Map.Entry::getKey).toList();
