@@ -20,7 +20,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-// @Table(name="_user")
 public class User implements UserDetails{
 
     @Id
@@ -37,12 +36,10 @@ public class User implements UserDetails{
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
-        // throw new UnsupportedOperationException("Unimplemented method 'getAuthorities'");
     }
     @Override
     public String getUsername() {
         return email;
-        // throw new UnsupportedOperationException("Unimplemented method 'getUsername'");
     }
     @Override
     public String getPassword() {
@@ -51,22 +48,18 @@ public class User implements UserDetails{
     @Override
     public boolean isAccountNonExpired() {
         return true;
-        // throw new UnsupportedOperationException("Unimplemented method 'isAccountNonExpired'");
     }
     @Override
     public boolean isAccountNonLocked() {
         return true;
-        // throw new UnsupportedOperationException("Unimplemented method 'isAccountNonLocked'");
     }
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
-        // throw new UnsupportedOperationException("Unimplemented method 'isCredentialsNonExpired'");
     }
     @Override
     public boolean isEnabled() {
         return true;
-        // throw new UnsupportedOperationException("Unimplemented method 'isEnabled'");
     }
 
 }

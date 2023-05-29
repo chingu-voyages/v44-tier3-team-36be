@@ -24,9 +24,9 @@ import lombok.RequiredArgsConstructor;
 public class ApplicationConfiguration {
 
     private final UserRepository repository;
-    
+
     @Bean
-    public UserDetailsService userDetailsService(){
+    UserDetailsService userDetailsService(){
             return new UserDetailsService() {
                 @Override
                 public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -39,9 +39,9 @@ public class ApplicationConfiguration {
                 }
             };
         }
-        
+
     @Bean
-    public AuthenticationProvider authenticationProvider() {
+    AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService());
         authProvider.setPasswordEncoder(passwordEncoder());
@@ -49,12 +49,12 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
