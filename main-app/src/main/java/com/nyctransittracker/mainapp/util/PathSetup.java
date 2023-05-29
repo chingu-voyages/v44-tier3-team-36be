@@ -10,18 +10,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.linearref.LengthIndexedLine;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component
+//@Component
 @RequiredArgsConstructor
 @Slf4j
 public class PathSetup implements CommandLineRunner {
@@ -34,7 +36,7 @@ public class PathSetup implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 //        readJson();
-//        calculateTrainPositions();
+        calculateTrainPositions();
     }
 
     /*
@@ -77,6 +79,7 @@ public class PathSetup implements CommandLineRunner {
     public void calculateTrainPositions() {
         MtaResponse mtaResponse = redisService.getData();
         Map<String, Route> routes = mtaResponse.getRoutes();
+        List<Point> trainPositions = new ArrayList<>();
         // testing for one line for now, change it to iterate through the map keys
         Map.Entry<String, Route> routeEntry = routes.entrySet().iterator().next();
         Route route = routeEntry.getValue();
@@ -93,7 +96,8 @@ public class PathSetup implements CommandLineRunner {
                         (lastStopId + "-" + nextStopId) : (nextStopId + "-" + lastStopId);
                 // simply getting from pathService will not work for express routes
                 Path path = pathService.getPath(pathName);
-                //TODO: convert list of Coordinates into a line using JTS and approximate current train position
+                Point point = calculateTrainPosition(stops, path, lastStopId, nextStopId);
+                trainPositions.add(point);
             });
         });
     }
@@ -106,11 +110,18 @@ public class PathSetup implements CommandLineRunner {
         return stopIds.get(stopIds.indexOf(lastStopId) + 1); // not too sure if I have to check bounds here
     }
 
-    public LineString getLineString(Path path) {
+    public Point calculateTrainPosition(Map<String, Long> stops ,Path path, String lastStopId, String nextStopId) {
         List<Point> points = path.getPoints();
         Coordinate[] coordinates = points.stream()
                 .map(point -> new Coordinate(point.longitude(), point.latitude()))
                 .toArray(Coordinate[]::new);
-        return geometryFactory.createLineString(coordinates);
+        LineString lineString = geometryFactory.createLineString(coordinates);
+        LengthIndexedLine indexedLine = new LengthIndexedLine(lineString);
+        long lastTimestamp = stops.get(lastStopId);
+        long nextTimeStamp = stops.get(nextStopId);
+        long nowTimestamp = Instant.now().getEpochSecond();
+        double progress = (double) (nowTimestamp - lastTimestamp) / (nextTimeStamp - lastTimestamp);
+        Coordinate coordinate = indexedLine.extractPoint(progress * lineString.getLength());
+        return new Point(coordinate.getX(), coordinate.getY());
     }
 }
