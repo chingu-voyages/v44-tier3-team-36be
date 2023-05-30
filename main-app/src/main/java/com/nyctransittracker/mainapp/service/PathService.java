@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +22,7 @@ public class PathService {
         pathRepository.saveAll(paths);
     }
 
-    public Path getPath(String pathName) {
-        return pathRepository.findByPathName(pathName).orElseThrow();
+    public Optional<Path> getPath(String pathName) {
+        return pathRepository.findByPathName(pathName);
     }
 }
