@@ -14,8 +14,8 @@ public class PathService {
 
     private final PathRepository pathRepository;
 
-    public void savePath(Path path) {
-        pathRepository.save(path);
+    public Path savePath(Path path) {
+        return pathRepository.save(path);
     }
 
     public void saveAllPaths(List<Path> paths) {
