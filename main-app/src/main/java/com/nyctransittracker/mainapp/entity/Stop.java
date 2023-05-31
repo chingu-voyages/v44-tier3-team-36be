@@ -21,6 +21,8 @@ import java.util.Map;
 public class Stop {
     @Id
     @Column(name="ID", length=50, nullable=false)
+    private Long uniqueId;
+    @Column(name="STOP_ID", length=50, nullable=false)
     @JsonProperty("id")
     private String GTFSStopID;
     @Transient
@@ -32,7 +34,7 @@ public class Stop {
     @Column(name="NAME", length=50, nullable=false, unique=false)
     private String name;
     @Column(name="LATITUDE", length=50, nullable=false, unique=false)
-    private String latitude;
+    private Double latitude;
     @Column(name="LONGITUDE", length=50, nullable=false, unique=false)
-    private String longitude;
+    private Double longitude;
 }

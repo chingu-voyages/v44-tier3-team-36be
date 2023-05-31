@@ -7,22 +7,20 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
-import java.io.IOException;
-
 @SpringBootApplication
 @EnableConfigurationProperties(RedisProperties.class)
 public class MainAppApplication {
 
-	@Autowired
-	private static StationFetcher stationFetcher;
+//	private final StationFetcher stationFetcher;
 
-	public MainAppApplication(StationFetcher stationFetcher) {
-		this.stationFetcher = stationFetcher;
-	}
+//	@Autowired
+//	public MainAppApplication(StationFetcher stationFetcher) {
+//		this.stationFetcher = stationFetcher;
+//	}
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		SpringApplication.run(MainAppApplication.class, args);
-		stationFetcher.fetchStations();
+//		stationFetcher.fetchStations();
 	}
 
 }

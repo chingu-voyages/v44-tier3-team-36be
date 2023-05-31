@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 public class StationResponse {
-    private int timestamp;
+    private long timestamp;
     @JsonProperty("stops")
     private List<Stop> stops;
 }
