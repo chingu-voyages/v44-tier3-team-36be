@@ -25,7 +25,7 @@ public class TestService {
     private final GeometryFactory geometryFactory;
 
     public Map<String, List<Point>> getTrainPositions() {
-        MtaResponse mtaResponse = redisService.getData();
+        MtaResponse mtaResponse = redisService.getMtaData();
         Map<String, Route> routes = mtaResponse.getRoutes();
         Map<String, List<Point>> allPositions = new HashMap<>();
         routes.forEach((line, route) -> {

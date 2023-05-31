@@ -16,6 +16,6 @@ public class MtaController {
 
     @GetMapping
     public MtaResponse getMtaData() {
-        return redisService.getData();
+        return redisService.getMtaData();
     }
 }

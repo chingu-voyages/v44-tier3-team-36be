@@ -1,4 +1,4 @@
-package com.nyctransittracker.mainapp.dto;
+package com.nyctransittracker.mainapp.model;
 
 import com.nyctransittracker.mainapp.model.Point;
 
