@@ -11,7 +11,7 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-class Route {
+public class Route {
     private String id;
     private String name;
     private String color;
