@@ -58,7 +58,8 @@ public class TrainPositionService {
                     if (path.isEmpty()) {
                         return;
                     }
-                    CoordinateBearing coordinateBearing = calculateTrainPosition(stops, path.get(), lastStopId, nextStopId);
+                    CoordinateBearing coordinateBearing =
+                            calculateTrainPosition(stops, path.get(), lastStopId, nextStopId);
                     trainPositions.add(coordinateBearing);
                 });
             });
@@ -75,7 +76,8 @@ public class TrainPositionService {
         return stopIds.get(stopIds.indexOf(lastStopId) + 1); // not too sure if I have to check bounds here
     }
 
-    private CoordinateBearing calculateTrainPosition(Map<String, Long> stops, Path path, String lastStopId, String nextStopId) {
+    private CoordinateBearing calculateTrainPosition(Map<String, Long> stops, Path path,
+                                                     String lastStopId, String nextStopId) {
         List<Point> points = path.getPoints();
         Coordinate[] coordinates = points.stream()
                 .map(point -> new Coordinate(point.longitude(), point.latitude()))
@@ -118,7 +120,8 @@ public class TrainPositionService {
      * @param step - number steps into the recursive call for stops that split into multiple stops
      * @return list of Points from start to end, or empty list if path does not exist
      */
-    private List<Point> getPathRecursive(String start, String end, Map<String, StationDetail> stationDetailMap, int step) {
+    private List<Point> getPathRecursive(String start, String end,
+                                         Map<String, StationDetail> stationDetailMap, int step) {
         if (step > 10) {
             return new ArrayList<>();
         }
