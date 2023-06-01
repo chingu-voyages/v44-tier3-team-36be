@@ -34,33 +34,24 @@ public class AuthenticationService {
                 .build();
 
             repository.save(user);
-            String jwtToken = jwtService.generateToken(user);
-            return jwtToken;
+            return jwtService.generateToken(user);
         } else {
             return "";
         }
     }
     
     public String authenticate(AuthenticationRequest request) {
-        try {authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                request.getEmail(),
-                request.getPassword()
-             )
-        );
+        try {
+            authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    request.getEmail(),
+                    request.getPassword()));
         } catch (AuthenticationException e) {
-            System.out.println(e);
             return "";
         }
 
-        var token = repository.findByEmail(request.getEmail())
-            .map(foundUser -> {
-            String jwtToken = jwtService.generateToken(foundUser);
-            return jwtToken;
-            })
+        return repository.findByEmail(request.getEmail())
+            .map(jwtService::generateToken)
             .get();
-
-        return token;
-        
     }
 }
