@@ -136,6 +136,7 @@ public class TrainPositionService {
             // Optional should not be empty since this is based on the json.
             Path pathToNext = pathService.getPath(start + "-" + next).get();
             List<Point> pointsToNext = pathToNext.getPoints();
+            // excluding the first coordinate since each Path has the coordinates for the start and end stops
             pointsToNext.addAll(nextPath.subList(1, nextPath.size()));
             return pointsToNext;
         }
