@@ -29,8 +29,7 @@ COPY src ./src
 
 RUN dos2unix mvnw
 RUN chmod +x mvnw
-RUN ./mvnw clean
-RUN ./mvnw package
+RUN ./mvnw clean package
 COPY ./target/*.jar app.jar
 
 FROM eclipse-temurin:17-jre-focal
