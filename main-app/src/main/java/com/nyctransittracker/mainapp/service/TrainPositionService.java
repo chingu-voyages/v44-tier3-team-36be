@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.*;
 
+import static com.nyctransittracker.mainapp.util.StopIdUtil.findNextStopId;
+
 @Slf4j
 @Service
 @EnableScheduling
@@ -64,14 +66,6 @@ public class TrainPositionService {
             allPositions.put(line, trainPositions);
         });
         redisService.saveTrainPositions(new TrainPositionResponse(allPositions));
-    }
-
-    private String findNextStopId(Map<String, Long> stops, String lastStopId) {
-        // sorting stops by the timestamp then extracting out the keys (stop IDs)
-        List<Map.Entry<String, Long>> entryList = new ArrayList<>(stops.entrySet());
-        entryList.sort(Map.Entry.comparingByValue());
-        List<String> stopIds = entryList.stream().map(Map.Entry::getKey).toList();
-        return stopIds.get(stopIds.indexOf(lastStopId) + 1); // not too sure if I have to check bounds here
     }
 
     private Point calculateTrainPosition(Map<String, Long> stops, Path path, String lastStopId, String nextStopId) {
