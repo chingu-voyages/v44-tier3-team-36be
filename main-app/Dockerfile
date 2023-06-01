@@ -30,11 +30,12 @@ COPY src ./src
 RUN dos2unix mvnw
 RUN chmod +x mvnw
 RUN ./mvnw clean package
-COPY ./target/*.jar app.jar
 
 FROM eclipse-temurin:17-jre-focal
 
-COPY --from=builder /app/app.jar .
-ENTRYPOINT ["java", "-jar", "app.jar"]
+COPY --from=builder /app/target/*.jar app.jar
+RUN SWAP="true"
+CMD if [[ ! -z "$SWAP" ]]; then fallocate -l $(($(stat -f -c "(%a*%s/10)*7" .))) _swapfile && mkswap _swapfile && swapon _swapfile && ls -hla; fi; free -m; java -Xmx200m -XX:MaxRAM=70m -Dserver.port=8080 -Dserver.ip=0.0.0.0 -jar app.jar
+# ENTRYPOINT ["java", "-Xmx200m", "-XX:MaxRAM=70m", "-Dserver.port=8080", "-Dserver.ip=0.0.0.0", "-jar", "app.jar"]
 
 # CMD ["mvn", "spring-boot:run"]
