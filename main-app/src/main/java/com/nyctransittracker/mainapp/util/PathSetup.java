@@ -7,24 +7,23 @@ import com.nyctransittracker.mainapp.service.PathService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ResourceUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-//@Component
+@Component
 @RequiredArgsConstructor
 @Slf4j
 public class PathSetup implements CommandLineRunner {
 
     private final PathService pathService;
-    private final static String filePath = "classpath:station_details.json";
+    private final static String fileName = "station_details.json";
 
     @Override
     public void run(String... args) throws Exception {
-//        readJson();
+        readJson();
     }
 
     /*
@@ -37,16 +36,12 @@ public class PathSetup implements CommandLineRunner {
         * when normally this train goes station A -> station B -> station C
         * */
         try {
-            File file = ResourceUtils.getFile(filePath);
+            ClassPathResource resource = new ClassPathResource(fileName);
             ObjectMapper mapper = new ObjectMapper();
-            Map<String, StationDetail> map = mapper.readValue(file,
+            Map<String, StationDetail> map = mapper.readValue(resource.getInputStream(),
                     new TypeReference<HashMap<String, StationDetail>>() {});
             List<Path> paths = new ArrayList<>();
             map.forEach((stopId, stationDetail) -> {
-//                code to see if there are stations where it splits into multiple next stations
-//                if (stationDetail.getNorth().size() > 1) {
-//                    log.info(stationDetail.getName());
-//                }
                 stationDetail.getNorth().forEach((nextStopId, coordinateList) -> {
                     String pathName = stopId + "-" + nextStopId;
                     List<Point> points = new ArrayList<>(coordinateList.stream()
