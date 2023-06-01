@@ -1,4 +1,4 @@
-package com.nyctransittracker.mainapp.entity;
+package com.nyctransittracker.mainapp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -20,8 +20,8 @@ import java.util.Map;
 
 public class Stop {
     @Id
-    @Column(name="ID", length=50, nullable=false)
-    private Long uniqueId;
+    @Column(name = "id")
+    private String uniqueId;
     @Column(name="STOP_ID", length=50, nullable=false)
     @JsonProperty("id")
     private String GTFSStopID;
