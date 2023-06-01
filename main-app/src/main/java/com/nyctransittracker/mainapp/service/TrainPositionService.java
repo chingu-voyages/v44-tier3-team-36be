@@ -9,6 +9,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.linearref.LengthIndexedLine;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -145,11 +146,11 @@ public class TrainPositionService {
     }
 
     private Map<String, StationDetail> getStationDetailMap() {
-        final String filePath = "classpath:station_details.json";
+        final String fileName = "station_details.json";
         try {
-            File file = ResourceUtils.getFile(filePath);
+            ClassPathResource resource = new ClassPathResource(fileName);
             ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(file,
+            return mapper.readValue(resource.getInputStream(),
                     new TypeReference<>() {});
         } catch (IOException e) {
             return new HashMap<>();
