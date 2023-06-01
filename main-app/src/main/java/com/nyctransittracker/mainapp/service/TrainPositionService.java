@@ -13,9 +13,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.*;
@@ -36,7 +34,6 @@ public class TrainPositionService {
 
     @Scheduled(fixedRate = 30000, initialDelay = 5000)
     public void processTrainPositions() {
-        log.info("start: " + Instant.now().toString());
         MtaResponse mtaResponse = redisService.getMtaData();
         Map<String, Route> routes = mtaResponse.getRoutes();
         Map<String, List<Point>> allPositions = new HashMap<>();
@@ -66,12 +63,11 @@ public class TrainPositionService {
             });
             allPositions.put(line, trainPositions);
         });
-        log.info("end: " + Instant.now().toString());
         redisService.saveTrainPositions(new TrainPositionResponse(allPositions));
     }
 
     private String findNextStopId(Map<String, Long> stops, String lastStopId) {
-//        sorting stops by the timestamp then extracting out the keys (stop IDs)
+        // sorting stops by the timestamp then extracting out the keys (stop IDs)
         List<Map.Entry<String, Long>> entryList = new ArrayList<>(stops.entrySet());
         entryList.sort(Map.Entry.comparingByValue());
         List<String> stopIds = entryList.stream().map(Map.Entry::getKey).toList();

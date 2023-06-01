@@ -25,4 +25,8 @@ public class PathService {
     public Optional<Path> getPath(String pathName) {
         return pathRepository.findByPathName(pathName);
     }
+
+    public boolean isEmpty() {
+        return pathRepository.count() > 0;
+    }
 }
