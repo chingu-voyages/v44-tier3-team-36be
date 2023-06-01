@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nyctransittracker.mainapp.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
@@ -36,12 +37,12 @@ public class TrainPositionService {
     public void processTrainPositions() {
         MtaResponse mtaResponse = redisService.getMtaData();
         Map<String, Route> routes = mtaResponse.getRoutes();
-        Map<String, List<Point>> allPositions = new HashMap<>();
+        Map<String, List<CoordinateBearing>> allPositions = new HashMap<>();
         routes.forEach((line, route) -> {
             if (!route.isScheduled() || route.getStatus().equals("No Service")) {
                 return;
             }
-            List<Point> trainPositions = new ArrayList<>();
+            List<CoordinateBearing> trainPositions = new ArrayList<>();
             Map<String, List<Trip>> trips = route.getTrips();
             trips.forEach((direction, tripList) -> {
                 tripList.forEach((trip) -> {
@@ -57,8 +58,8 @@ public class TrainPositionService {
                     if (path.isEmpty()) {
                         return;
                     }
-                    Point point = calculateTrainPosition(stops, path.get(), lastStopId, nextStopId);
-                    trainPositions.add(point);
+                    CoordinateBearing coordinateBearing = calculateTrainPosition(stops, path.get(), lastStopId, nextStopId);
+                    trainPositions.add(coordinateBearing);
                 });
             });
             allPositions.put(line, trainPositions);
@@ -74,7 +75,7 @@ public class TrainPositionService {
         return stopIds.get(stopIds.indexOf(lastStopId) + 1); // not too sure if I have to check bounds here
     }
 
-    private Point calculateTrainPosition(Map<String, Long> stops, Path path, String lastStopId, String nextStopId) {
+    private CoordinateBearing calculateTrainPosition(Map<String, Long> stops, Path path, String lastStopId, String nextStopId) {
         List<Point> points = path.getPoints();
         Coordinate[] coordinates = points.stream()
                 .map(point -> new Coordinate(point.longitude(), point.latitude()))
@@ -85,8 +86,13 @@ public class TrainPositionService {
         long nextTimeStamp = stops.get(nextStopId);
         long nowTimestamp = Instant.now().getEpochSecond();
         double progress = (double) (nowTimestamp - lastTimestamp) / (nextTimeStamp - lastTimestamp);
-        Coordinate coordinate = indexedLine.extractPoint(progress * lineString.getLength());
-        return new Point(coordinate.getX(), coordinate.getY());
+        double length = lineString.getLength();
+        Coordinate coordinate = indexedLine.extractPoint(progress * length);
+        Coordinate heading = indexedLine.extractPoint((progress + 0.01) * length);
+        // Returns the angle of the vector from p0 to p1, relative to the positive X-axis.
+        // The angle is normalized to be in the range [ -Pi, Pi ].
+        double bearing = Angle.angle(coordinate, heading);
+        return new CoordinateBearing(coordinate.getX(), coordinate.getY(), bearing);
     }
 
     private Optional<Path> getPath(String pathName) {
