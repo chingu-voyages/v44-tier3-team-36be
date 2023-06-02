@@ -1,7 +1,9 @@
 package com.nyctransittracker.mainapp.config;
 
-import com.nyctransittracker.mainapp.model.TrainPositionResponse;
-import com.nyctransittracker.mainapp.model.MtaResponse;
+import com.nyctransittracker.mainapp.dto.ArrivalTimeResponse;
+import com.nyctransittracker.mainapp.dto.TrainPositionResponse;
+import com.nyctransittracker.mainapp.dto.MtaResponse;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,6 +40,14 @@ public class RedisConfiguration {
         RedisTemplate<String, TrainPositionResponse> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(jedisConnectionFactory());
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(TrainPositionResponse.class));
+        return redisTemplate;
+    }
+
+    @Bean
+    public RedisTemplate<String, ArrivalTimeResponse> arrivalTimeResponseRedisTemplate() {
+        RedisTemplate<String, ArrivalTimeResponse> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(jedisConnectionFactory());
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(ArrivalTimeResponse.class));
         return redisTemplate;
     }
 }

@@ -1,7 +1,8 @@
 package com.nyctransittracker.mainapp.service;
 
-import com.nyctransittracker.mainapp.model.MtaResponse;
-import com.nyctransittracker.mainapp.model.TrainPositionResponse;
+import com.nyctransittracker.mainapp.dto.ArrivalTimeResponse;
+import com.nyctransittracker.mainapp.dto.MtaResponse;
+import com.nyctransittracker.mainapp.dto.TrainPositionResponse;
 import com.nyctransittracker.mainapp.repository.RedisRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,12 +21,20 @@ public class RedisService {
         redisRepository.save(positions);
     }
 
+    public void saveArrivalTimes(ArrivalTimeResponse times) {
+        redisRepository.save(times);
+    }
+
     public MtaResponse getMtaData() {
         return redisRepository.getMtaData();
     }
 
     public TrainPositionResponse getTrainPositions() {
         return redisRepository.getTrainPositions();
+    }
+
+    public ArrivalTimeResponse getArrivalTimes() {
+        return redisRepository.getArrivalTimes();
     }
 
 }
