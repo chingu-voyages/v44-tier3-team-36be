@@ -7,6 +7,7 @@ import com.nyctransittracker.mainapp.dto.TrainPositionResponse;
 import com.nyctransittracker.mainapp.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.locationtech.jts.algorithm.Angle;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
@@ -41,12 +42,12 @@ public class TrainPositionService {
         log.info("Starting train position calculation: " + Instant.now().toString());
         MtaResponse mtaResponse = redisService.getMtaData();
         Map<String, Route> routes = mtaResponse.getRoutes();
-        Map<String, List<Point>> allPositions = new HashMap<>();
+        Map<String, List<CoordinateBearing>> allPositions = new HashMap<>();
         routes.forEach((line, route) -> {
             if (!route.isScheduled() || route.getStatus().equals("No Service")) {
                 return;
             }
-            List<Point> trainPositions = new ArrayList<>();
+            List<CoordinateBearing> trainPositions = new ArrayList<>();
             Map<String, List<Trip>> trips = route.getTrips();
             trips.forEach((direction, tripList) -> {
                 tripList.forEach((trip) -> {
@@ -62,8 +63,9 @@ public class TrainPositionService {
                     if (path.isEmpty()) {
                         return;
                     }
-                    Point point = calculateTrainPosition(stops, path.get(), lastStopId, nextStopId);
-                    trainPositions.add(point);
+                    CoordinateBearing coordinateBearing =
+                            calculateTrainPosition(stops, path.get(), lastStopId, nextStopId);
+                    trainPositions.add(coordinateBearing);
                 });
             });
             allPositions.put(line, trainPositions);
@@ -72,7 +74,8 @@ public class TrainPositionService {
         log.info("Done with train position calculation: " + Instant.now().toString());
     }
 
-    private Point calculateTrainPosition(Map<String, Long> stops, Path path, String lastStopId, String nextStopId) {
+    private CoordinateBearing calculateTrainPosition(Map<String, Long> stops, Path path,
+                                                     String lastStopId, String nextStopId) {
         List<Point> points = path.getPoints();
         Coordinate[] coordinates = points.stream()
                 .map(point -> new Coordinate(point.longitude(), point.latitude()))
@@ -83,8 +86,13 @@ public class TrainPositionService {
         long nextTimeStamp = stops.get(nextStopId);
         long nowTimestamp = Instant.now().getEpochSecond();
         double progress = (double) (nowTimestamp - lastTimestamp) / (nextTimeStamp - lastTimestamp);
-        Coordinate coordinate = indexedLine.extractPoint(progress * lineString.getLength());
-        return new Point(coordinate.getX(), coordinate.getY());
+        double length = lineString.getLength();
+        Coordinate coordinate = indexedLine.extractPoint(progress * length);
+        Coordinate heading = indexedLine.extractPoint((progress + 0.01) * length);
+        // Returns the angle of the vector from p0 to p1, relative to the positive X-axis.
+        // The angle is normalized to be in the range [ -Pi, Pi ].
+        double bearing = Angle.angle(coordinate, heading);
+        return new CoordinateBearing(coordinate.getX(), coordinate.getY(), bearing);
     }
 
     private Optional<Path> getPath(String pathName) {
@@ -110,7 +118,8 @@ public class TrainPositionService {
      * @param step - number steps into the recursive call for stops that split into multiple stops
      * @return list of Points from start to end, or empty list if path does not exist
      */
-    private List<Point> getPathRecursive(String start, String end, Map<String, StationDetail> stationDetailMap, int step) {
+    private List<Point> getPathRecursive(String start, String end,
+                                         Map<String, StationDetail> stationDetailMap, int step) {
         if (step > 10) {
             return new ArrayList<>();
         }
