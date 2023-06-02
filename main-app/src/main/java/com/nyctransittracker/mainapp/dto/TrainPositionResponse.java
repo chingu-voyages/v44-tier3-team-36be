@@ -1,4 +1,6 @@
-package com.nyctransittracker.mainapp.model;
+package com.nyctransittracker.mainapp.dto;
+
+import com.nyctransittracker.mainapp.model.Point;
 
 import java.util.List;
 import java.util.Map;

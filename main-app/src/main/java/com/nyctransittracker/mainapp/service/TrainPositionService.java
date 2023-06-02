@@ -2,6 +2,8 @@ package com.nyctransittracker.mainapp.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nyctransittracker.mainapp.dto.MtaResponse;
+import com.nyctransittracker.mainapp.dto.TrainPositionResponse;
 import com.nyctransittracker.mainapp.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +38,7 @@ public class TrainPositionService {
 
     @Scheduled(fixedRate = 30000, initialDelay = 5000)
     public void processTrainPositions() {
+        log.info("Starting train position calculation: " + Instant.now().toString());
         MtaResponse mtaResponse = redisService.getMtaData();
         Map<String, Route> routes = mtaResponse.getRoutes();
         Map<String, List<Point>> allPositions = new HashMap<>();
@@ -66,6 +69,7 @@ public class TrainPositionService {
             allPositions.put(line, trainPositions);
         });
         redisService.saveTrainPositions(new TrainPositionResponse(allPositions));
+        log.info("Done with train position calculation: " + Instant.now().toString());
     }
 
     private Point calculateTrainPosition(Map<String, Long> stops, Path path, String lastStopId, String nextStopId) {

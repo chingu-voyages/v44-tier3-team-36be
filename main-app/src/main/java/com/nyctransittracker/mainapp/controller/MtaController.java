@@ -1,6 +1,6 @@
 package com.nyctransittracker.mainapp.controller;
 
-import com.nyctransittracker.mainapp.model.MtaResponse;
+import com.nyctransittracker.mainapp.dto.MtaResponse;
 import com.nyctransittracker.mainapp.service.RedisService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

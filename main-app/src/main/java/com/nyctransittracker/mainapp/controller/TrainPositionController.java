@@ -1,6 +1,6 @@
 package com.nyctransittracker.mainapp.controller;
 
-import com.nyctransittracker.mainapp.model.TrainPositionResponse;
+import com.nyctransittracker.mainapp.dto.TrainPositionResponse;
 import com.nyctransittracker.mainapp.service.TrainPositionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

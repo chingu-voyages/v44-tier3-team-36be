@@ -1,6 +1,6 @@
 package com.nyctransittracker.mainapp.util;
 
-import com.nyctransittracker.mainapp.model.MtaResponse;
+import com.nyctransittracker.mainapp.dto.MtaResponse;
 import com.nyctransittracker.mainapp.service.RedisService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +8,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.time.Instant;
 
 @Component
 @EnableScheduling
@@ -21,13 +23,14 @@ public class DataFetcher {
 
     @Scheduled(fixedRate = 30000)
     public void fetchData() {
+        log.info("Starting fetching data: " + Instant.now().toString());
         MtaResponse mtaResponse = webClient.get()
                 .uri(url)
                 .retrieve()
                 .bodyToMono(MtaResponse.class)
                 .block();
         redisService.saveData(mtaResponse);
-        log.info("data fetched and saved");
+        log.info("Done with fetching data: " + Instant.now().toString());
     }
 
 }
