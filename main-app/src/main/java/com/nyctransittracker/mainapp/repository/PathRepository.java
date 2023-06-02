@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface PathRepository extends MongoRepository<Path, String> {
 
-    public Optional<Path> findByPathName(String pathName);
+    Optional<Path> findByPathName(String pathName);
 }

@@ -20,5 +20,5 @@ public class Path {
     private String id;
     @Indexed(unique = true)
     private String pathName;
-    private List<Coordinate> coordinates;
+    private List<Point> points;
 }

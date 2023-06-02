@@ -2,7 +2,7 @@
 
 Application Details:
 
-This project is a spring boot application with spring boot web dependency to run on tomcat web server 
+This project is a spring boot application with spring boot web dependency to run on tomcat web server
 
 Other dependencies: Spring Data JPA and MySQL Driver for data persistence.
 
