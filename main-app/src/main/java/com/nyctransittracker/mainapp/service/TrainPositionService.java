@@ -13,8 +13,6 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.linearref.LengthIndexedLine;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -25,7 +23,6 @@ import static com.nyctransittracker.mainapp.util.StopIdUtil.findNextStopId;
 
 @Slf4j
 @Service
-@EnableScheduling
 @RequiredArgsConstructor
 public class TrainPositionService {
 
@@ -37,7 +34,6 @@ public class TrainPositionService {
         return redisService.getTrainPositions();
     }
 
-    @Scheduled(fixedRate = 30000, initialDelay = 5000)
     public void processTrainPositions() {
         log.info("Starting train position calculation: " + Instant.now().toString());
         MtaResponse mtaResponse = redisService.getMtaData();

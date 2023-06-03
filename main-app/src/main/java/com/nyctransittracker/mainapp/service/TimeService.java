@@ -7,8 +7,6 @@ import com.nyctransittracker.mainapp.model.Route;
 import com.nyctransittracker.mainapp.model.Trip;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -21,7 +19,6 @@ import static com.nyctransittracker.mainapp.util.StopIdUtil.findNextStopId;
 
 @Slf4j
 @Service
-@EnableScheduling
 @RequiredArgsConstructor
 public class TimeService {
 
@@ -31,7 +28,6 @@ public class TimeService {
         return redisService.getArrivalTimes();
     }
 
-    @Scheduled(fixedRate = 30000, initialDelay = 5000)
     public void processTimeInfo() {
         log.info("Starting time info process: " + Instant.now().toString());
         MtaResponse mtaResponse = redisService.getMtaData();
