@@ -11,16 +11,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @EnableConfigurationProperties(RedisProperties.class)
 public class MainAppApplication {
 
-//	private final StationFetcher stationFetcher;
-
-//	@Autowired
-//	public MainAppApplication(StationFetcher stationFetcher) {
-//		this.stationFetcher = stationFetcher;
-//	}
-
 	public static void main(String[] args) {
 		SpringApplication.run(MainAppApplication.class, args);
-//		stationFetcher.fetchStations();
 	}
 
 }
