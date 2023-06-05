@@ -1,7 +1,9 @@
 package com.nyctransittracker.mainapp.service;
 
 import com.nyctransittracker.mainapp.dto.AuthenticationRequest;
+import com.nyctransittracker.mainapp.dto.AuthenticationResponse;
 import com.nyctransittracker.mainapp.dto.RegisterRequest;
+import com.nyctransittracker.mainapp.dto.UserDto;
 import com.nyctransittracker.mainapp.model.Role;
 import com.nyctransittracker.mainapp.model.User;
 import com.nyctransittracker.mainapp.repository.UserRepository;
@@ -23,7 +25,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     
-    public String register(RegisterRequest request) {
+    public AuthenticationResponse register(RegisterRequest request) {
         if (repository.findByEmail(request.getEmail()).isEmpty()){
             User user = User.builder()
                 .firstname(request.getFirstname())
@@ -35,13 +37,18 @@ public class AuthenticationService {
 
             repository.save(user);
             String jwtToken = jwtService.generateToken(user);
-            return jwtToken;
+            return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .user(UserDto.userMapper(user))
+                .build();
         } else {
-            return "";
+            return AuthenticationResponse.builder()
+                .message("Email already taken.")
+                .build();
         }
     }
     
-    public String authenticate(AuthenticationRequest request) {
+    public AuthenticationResponse authenticate(AuthenticationRequest request) {
         try {authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
                 request.getEmail(),
@@ -50,17 +57,17 @@ public class AuthenticationService {
         );
         } catch (AuthenticationException e) {
             System.out.println(e);
-            return "";
+            return AuthenticationResponse.builder()
+                .message("Invalid login credentials.")
+                .build();
         }
 
-        var token = repository.findByEmail(request.getEmail())
-            .map(foundUser -> {
-            String jwtToken = jwtService.generateToken(foundUser);
-            return jwtToken;
-            })
-            .get();
+        User user = repository.findByEmail(request.getEmail()).get();
+        String jwtToken = jwtService.generateToken(user);
 
-        return token;
-        
+        return AuthenticationResponse.builder()
+            .token(jwtToken)
+            .user(UserDto.userMapper(user))
+            .build();
     }
 }

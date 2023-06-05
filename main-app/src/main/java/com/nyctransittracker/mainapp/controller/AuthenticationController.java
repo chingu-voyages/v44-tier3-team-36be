@@ -23,17 +23,13 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> register(
         @RequestBody RegisterRequest request
     ) {
-        String jwtToken = service.register(request);
-        if (jwtToken.length() > 0) {
+        AuthenticationResponse response = service.register(request);
+        if (response.getToken() != null) {
             return ResponseEntity
-                    .ok(AuthenticationResponse.builder()
-                    .token(jwtToken)
-                    .build());
+                    .ok(response);
         } else {
             return ResponseEntity
-            .badRequest().body(AuthenticationResponse.builder()
-            .message("Email already taken.")
-            .build());
+            .badRequest().body(response);
         }
     }
 
@@ -41,17 +37,13 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> authenticate(
         @RequestBody AuthenticationRequest request
     ) {
-        String jwtToken = service.authenticate(request);
-        if (jwtToken.length() > 0) {
+        AuthenticationResponse response = service.authenticate(request);
+        if (response.getToken() != null) {
             return ResponseEntity
-                    .ok(AuthenticationResponse.builder()
-                    .token(jwtToken)
-                    .build());
+                    .ok(response);
         } else {
             return ResponseEntity
-            .badRequest().body(AuthenticationResponse.builder()
-            .message("Invalid login credentials.")
-            .build());
+            .badRequest().body(response);
         }
     }
 }

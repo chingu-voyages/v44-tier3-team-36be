@@ -16,4 +16,6 @@ public class AuthenticationResponse {
     private String token;
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
     private String message;
+    @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
+    private UserDto user;
 }
