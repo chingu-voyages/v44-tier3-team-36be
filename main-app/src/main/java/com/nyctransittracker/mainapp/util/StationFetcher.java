@@ -32,7 +32,7 @@ public class StationFetcher implements CommandLineRunner {
         stops.forEach(stop ->
                 stop.getRoutes().forEach((route, dList) ->
                             dList.forEach(d ->
-                                    service.createStation(stop, d.toString(), route.toString())
+                                    service.createStop(stop, d.toString(), route.toString())
                         )
                 )
         );

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -16,13 +17,13 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 
 @Entity
-@Table(name="STOP")
+@Table(name="STOPS")
 
 public class Stop {
     @Id
-    @Column(name = "id")
+    @Column(name = "ID")
     private String uniqueId;
-    @Column(name="STOP_ID", length=50, nullable=false)
+    @Column(name="GTFS_STOP_ID", length=50, nullable=false)
     @JsonProperty("id")
     private String GTFSStopID;
     @Transient
@@ -37,4 +38,11 @@ public class Stop {
     private Double latitude;
     @Column(name="LONGITUDE", length=50, nullable=false, unique=false)
     private Double longitude;
+    @Column(name="SUBSCRIBED_USERS", unique=false)
+    @ManyToMany
+    @JoinTable(
+            name = "SUBSCRIPTIONS",
+            joinColumns = @JoinColumn(name = "STOP_ID"),
+            inverseJoinColumns = @JoinColumn(name = "USER_ID"))
+    private Set<User> subscribedUsers;
 }

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,6 +29,9 @@ public class User implements UserDetails{
     private String lastname;
     private String email;
     private String password;
+
+    @ManyToMany
+    private Set<Stop> subscribedStops;
 
     @Enumerated(EnumType.STRING)
     private Role role;

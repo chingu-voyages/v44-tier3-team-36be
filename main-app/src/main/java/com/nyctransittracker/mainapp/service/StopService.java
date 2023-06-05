@@ -10,15 +10,17 @@ import org.springframework.stereotype.Service;
 public class StopService {
 
     private final StopRepository repository;
-    public void createStation(Stop stop, String direction, String route) {
-        var newStop = new Stop();
-        newStop.setUniqueId(stop.getGTFSStopID().toString() + route + direction);
-        newStop.setGTFSStopID(stop.getGTFSStopID());
-        newStop.setName(stop.getName());
-        newStop.setLatitude(stop.getLatitude());
-        newStop.setLongitude(stop.getLongitude());
-        newStop.setDirection(direction);
-        newStop.setRoute(route);
-        repository.save(newStop);
+    public void createStop(Stop stop, String direction, String route) {
+        if (!repository.findById(route).isPresent()) {
+            var newStop = new Stop();
+            newStop.setUniqueId(stop.getGTFSStopID() + route + direction);
+            newStop.setGTFSStopID(stop.getGTFSStopID());
+            newStop.setName(stop.getName());
+            newStop.setLatitude(stop.getLatitude());
+            newStop.setLongitude(stop.getLongitude());
+            newStop.setDirection(direction);
+            newStop.setRoute(route);
+            repository.save(newStop);
+        }
     }
 }
