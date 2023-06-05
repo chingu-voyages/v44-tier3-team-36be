@@ -15,8 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.nyctransittracker.mainapp.util.StopIdUtil.findNextStopId;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -38,7 +36,7 @@ public class TimeService {
                 return;
             }
             // create new map for each of the lines
-            // used to sort by arrival time on per stop basis, since response from goodservice comes on trip basis
+            // used to store arrival time on per stop basis, since mta response comes on trip basis
             Map<String, Map<String, List<ArrivalTime>>> stopTimes = new HashMap<>();
             allTimes.put(line, stopTimes);
             Map<String, List<Trip>> trips = route.getTrips();
@@ -49,17 +47,18 @@ public class TimeService {
                         return;
                     }
                     Map<String, Long> stops = trip.getStops();
-                    String nextStopId = findNextStopId(stops, lastStopId);
-                    long eta = stops.get(nextStopId) - Instant.now().getEpochSecond();
-                    if (stopTimes.get(nextStopId) == null) {
-                        // since there is no entry for this stop yet, create a new map with two empty maps (directions)
-                        Map<String, List<ArrivalTime>> directionMap = new HashMap<>();
-                        directionMap.put("north", new ArrayList<>());
-                        directionMap.put("south", new ArrayList<>());
-                        stopTimes.put(nextStopId, directionMap);
-                    }
-                    ArrivalTime arrivalTime = new ArrivalTime(eta, trip.isDelayed(), trip.isAssigned());
-                    stopTimes.get(nextStopId).get(direction).add(arrivalTime);
+                    stops.forEach((stopId, time) -> {
+                        long eta = time - Instant.now().getEpochSecond();
+                        if (stopTimes.get(stopId) == null) {
+                            // since there is no entry for this stop yet, create a new map with two empty maps (directions)
+                            Map<String, List<ArrivalTime>> directionMap = new HashMap<>();
+                            directionMap.put("north", new ArrayList<>());
+                            directionMap.put("south", new ArrayList<>());
+                            stopTimes.put(stopId, directionMap);
+                        }
+                        ArrivalTime arrivalTime = new ArrivalTime(eta, trip.isDelayed(), trip.isAssigned());
+                        stopTimes.get(stopId).get(direction).add(arrivalTime);
+                    });
                 });
             });
         });

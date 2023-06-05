@@ -113,6 +113,9 @@ public class TrainPositionService {
      * @param stationDetailMap - map representation of station details json
      * @param step - number steps into the recursive call for stops that split into multiple stops
      * @return list of Points from start to end, or empty list if path does not exist
+     * <p>
+     * finds path from Station x to Station x+n, going from x->x+n, then x+1->x+n, until a path exists,
+     * most likely till x+n-1->x+n
      */
     private List<Point> getPathRecursive(String start, String end,
                                          Map<String, StationDetail> stationDetailMap, int step) {
@@ -144,6 +147,12 @@ public class TrainPositionService {
         return new ArrayList<>();
     }
 
+
+    /*
+    * creates a map of stopId to StationDetail, containing information,
+    * such as what stops are north/south of this stop
+    * use this to recursively find paths
+    * */
     private Map<String, StationDetail> getStationDetailMap() {
         final String fileName = "station_details.json";
         try {
