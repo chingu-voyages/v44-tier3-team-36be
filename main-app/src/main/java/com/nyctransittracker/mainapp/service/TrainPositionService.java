@@ -38,14 +38,15 @@ public class TrainPositionService {
         log.info("Starting train position calculation: " + Instant.now().toString());
         MtaResponse mtaResponse = redisService.getMtaData();
         Map<String, Route> routes = mtaResponse.getRoutes();
-        Map<String, List<CoordinateBearing>> allPositions = new HashMap<>();
+        Map<String, Map<String, List<CoordinateBearing>>> allPositions = new HashMap<>();
         routes.forEach((line, route) -> {
             if (!route.isScheduled() || route.getStatus().equals("No Service")) {
                 return;
             }
-            List<CoordinateBearing> trainPositions = new ArrayList<>();
+            Map<String, List<CoordinateBearing>> directionMap = new HashMap<>();
             Map<String, List<Trip>> trips = route.getTrips();
             trips.forEach((direction, tripList) -> {
+                List<CoordinateBearing> trainPositions = new ArrayList<>();
                 tripList.forEach((trip) -> {
                     String lastStopId = trip.getLastStopMade();
                     if (lastStopId == null) {
@@ -63,8 +64,9 @@ public class TrainPositionService {
                             calculateTrainPosition(stops, path.get(), lastStopId, nextStopId);
                     trainPositions.add(coordinateBearing);
                 });
+                directionMap.put(direction, trainPositions);
             });
-            allPositions.put(line, trainPositions);
+            allPositions.put(line, directionMap);
         });
         redisService.saveTrainPositions(new TrainPositionResponse(allPositions));
         log.info("Done with train position calculation: " + Instant.now().toString());
